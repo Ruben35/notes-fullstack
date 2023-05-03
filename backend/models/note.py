@@ -1,5 +1,6 @@
 from config.database import Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -9,6 +10,8 @@ class Note(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=False)
     description = Column(String(1000), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("User", back_populates="notes")
 
 
 class NoteModel(BaseModel):
