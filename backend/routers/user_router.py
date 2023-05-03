@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import List
@@ -15,7 +15,10 @@ def get_all_users() -> List[UserModel]:
 
 
 @user_router.post('/user', tags=["Users"], response_model=dict, status_code=201)
-def create_new_user(user: UserModel) -> dict:
+def create_new_user(username: str = Body(), password: str = Body(), repeat_password: str = Body()) -> dict:
+    if (password != repeat_password):
+        return JSONResponse(status_code=422, content="Passwords don't match")
+    user = UserModel.parse_obj({"username": username, "password": password})
     allOk = UserService().create_new_user(user)
     if not allOk:
         return JSONResponse(status_code=409, content={"message": "Username duplicated"})
