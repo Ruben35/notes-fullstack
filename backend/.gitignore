@@ -3,3 +3,5 @@ __pycache__/
 .pyc
 # Ignoring venv
 venv
+#Ignoring SQLite Database
+database-notes.sqlite
