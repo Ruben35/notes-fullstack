@@ -1,22 +1,23 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from services.notes_service import NotesService
 from models.note import NoteModel
+from middlewares.jwt_bearer import JWTBearer
 
 notes_router = APIRouter()
 
 
 @notes_router.get('/notes', tags=["Notes"], response_model=List[NoteModel], status_code=200)
-def get_all_notes() -> List[NoteModel]:
-    result = NotesService().get_notes()
+def get_all_notes(user_id=Depends(JWTBearer())) -> List[NoteModel]:
+    result = NotesService().get_notes(user_id)
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 
 @notes_router.post('/notes', tags=["Notes"], response_model=dict, status_code=201)
-def create_new_note(note: NoteModel) -> dict:
-    allOk = NotesService().create_new_note(note)
+def create_new_note(note: NoteModel, user_id=Depends(JWTBearer())) -> dict:
+    allOk = NotesService().create_new_note(note, user_id)
     if not allOk:
         return JSONResponse(status_code=409, content={'message': 'Note title duplication'})
     return JSONResponse(status_code=201, content={'message': 'Note added succesfully'})

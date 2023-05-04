@@ -1,20 +1,22 @@
 from config.database import Session
 from models.note import Note, NoteModel
+from sqlalchemy.orm import load_only
 
 
 class NotesService():
     def __init__(self) -> None:
         self.db = Session()
 
-    def get_notes(self):
-        return self.db.query(Note).all()
+    def get_notes(self, user_id):
+        return self.db.query(Note).filter(Note.user_id == user_id).options(load_only(Note.id, Note.title, Note.description)).all()
 
-    def create_new_note(self, note: NoteModel):
+    def create_new_note(self, note: NoteModel, user_id: int):
         titleExist = self.db.query(Note).filter(
-            Note.title == note.title).first()
+            Note.title == note.title, Note.user_id == user_id).first()
         if titleExist:
             return False
         new_note = Note(**note.dict())
+        new_note.user_id = user_id
         self.db.add(new_note)
         self.db.commit()
         return True
