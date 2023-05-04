@@ -24,3 +24,8 @@ class UserService():
         self.db.commit()
 
         return True
+
+    def login(self, user: UserModel):
+        userAuth = self.db.query(User).filter(User.username == user.username, User.password == hashlib.md5(
+            user.password.encode()).hexdigest()).options(load_only(User.id, User.username)).first()
+        return userAuth
