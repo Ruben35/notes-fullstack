@@ -24,27 +24,34 @@ def create_new_note(note: NoteModel, user_id=Depends(JWTBearer())) -> dict:
 
 
 @notes_router.get('/notes/{id}', tags=["Notes"], response_model=NoteModel, status_code=200)
-def get_note_by_id(id: int) -> NoteModel:
+def get_note_by_id(id: int, user_id=Depends(JWTBearer())) -> NoteModel:
     result = NotesService().get_note_by_id(id)
     if not result:
         return JSONResponse(status_code=404, content={'message': 'Note not founded'})
-    return JSONResponse(status_code=200, content=jsonable_encoder(result))
+    if result.user_id != user_id:
+        return JSONResponse(status_code=401, content={'message': 'User not authorized to get this note'})
+    return JSONResponse(status_code=200, content={'id': result.id, 'title': result.title, 'description': result.description})
 
 
 @notes_router.put('/notes/{id}', tags=["Notes"], response_model=dict, status_code=200)
-def update_note_by_id(id: int, note: NoteModel) -> dict:
-    allOk, reason = NotesService().update_note_by_id(id, note)
+def update_note_by_id(id: int, note: NoteModel, user_id=Depends(JWTBearer())) -> dict:
+    allOk, reason = NotesService().update_note_by_id(id, note, user_id)
     if not allOk:
         if reason == 'NotFound':
             return JSONResponse(status_code=404, content={'message': 'Note not founded'})
-        else:
+        if reason == 'Duplicate':
             return JSONResponse(status_code=409, content={'message': 'Note title duplication'})
+        else:
+            return JSONResponse(status_code=401, content={'message': 'User not authorized to modify this note'})
     return JSONResponse(status_code=200, content={'message': 'Note modified'})
 
 
 @notes_router.delete('/notes/{id}', tags=["Notes"], response_model=dict, status_code=200)
-def delete_note_by_id(id: int) -> dict:
-    result = NotesService().delete_note_by_id(id)
-    if not result:
-        return JSONResponse(status_code=404, content={'message': 'Note not founded'})
+def delete_note_by_id(id: int, user_id=Depends(JWTBearer())) -> dict:
+    allOk, reason = NotesService().delete_note_by_id(id, user_id)
+    if not allOk:
+        if reason == 'NotFound':
+            return JSONResponse(status_code=404, content={'message': 'Note not founded'})
+        else:
+            return JSONResponse(status_code=401, content={'message': 'User not authorized to delete this note'})
     return JSONResponse(status_code=200, content={'message': 'Note deleted'})

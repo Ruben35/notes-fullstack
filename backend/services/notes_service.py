@@ -24,12 +24,14 @@ class NotesService():
     def get_note_by_id(self, id: int):
         return self.db.query(Note).filter(Note.id == id).first()
 
-    def update_note_by_id(self, id: int, note: NoteModel):
+    def update_note_by_id(self, id: int, note: NoteModel, user_id: int):
         noteToModify = self.db.query(Note).filter(Note.id == id).first()
         if not noteToModify:
             return False, 'NotFound'
+        if noteToModify.user_id != user_id:
+            return False, 'NotAuthorized'
         titleExist = self.db.query(Note).filter(
-            Note.title == note.title, Note.id != id).first()
+            Note.title == note.title, Note.id != id, Note.user_id == user_id).first()
         if titleExist:
             return False, 'Duplicate'
         noteToModify.title = note.title
@@ -37,10 +39,12 @@ class NotesService():
         self.db.commit()
         return True, ''
 
-    def delete_note_by_id(self, id: int):
+    def delete_note_by_id(self, id: int, user_id: int):
         noteToDelete = self.db.query(Note).filter(Note.id == id).first()
         if not noteToDelete:
-            return False
+            return False, 'NotFound'
+        if noteToDelete.user_id != user_id:
+            return False, 'NotAuthorized'
         self.db.delete(noteToDelete)
         self.db.commit()
-        return True
+        return True, ''
