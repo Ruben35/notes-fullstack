@@ -9,7 +9,10 @@ class UserService():
         self.db = Session()
 
     def get_users(self):
-        return self.db.query(User).options(load_only(User.id, User.username)).all()
+        query = self.db.query(User).options(
+            load_only(User.id, User.username)).all()
+        self.db.close()
+        return query
 
     def create_new_user(self, user: UserModel):
         userExist = self.db.query(User).filter(
@@ -22,10 +25,13 @@ class UserService():
             user.password.encode()).hexdigest())
         self.db.add(new_user)
         self.db.commit()
+        self.db.close()
 
         return True
 
     def login(self, user: UserModel):
         userAuth = self.db.query(User).filter(User.username == user.username, User.password == hashlib.md5(
             user.password.encode()).hexdigest()).options(load_only(User.id, User.username)).first()
+        self.db.close()
+
         return userAuth

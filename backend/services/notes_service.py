@@ -8,7 +8,11 @@ class NotesService():
         self.db = Session()
 
     def get_notes(self, user_id):
-        return self.db.query(Note).filter(Note.user_id == user_id).options(load_only(Note.id, Note.title, Note.description)).all()
+        query = self.db.query(Note).filter(Note.user_id == user_id).options(
+            load_only(Note.id, Note.title, Note.description)).all()
+        self.db.close()
+
+        return query
 
     def create_new_note(self, note: NoteModel, user_id: int):
         titleExist = self.db.query(Note).filter(
@@ -19,10 +23,14 @@ class NotesService():
         new_note.user_id = user_id
         self.db.add(new_note)
         self.db.commit()
+        self.db.close()
+
         return True
 
     def get_note_by_id(self, id: int):
-        return self.db.query(Note).filter(Note.id == id).first()
+        query = self.db.query(Note).filter(Note.id == id).first()
+        self.db.close()
+        return query
 
     def update_note_by_id(self, id: int, note: NoteModel, user_id: int):
         noteToModify = self.db.query(Note).filter(Note.id == id).first()
@@ -37,6 +45,8 @@ class NotesService():
         noteToModify.title = note.title
         noteToModify.description = note.description
         self.db.commit()
+        self.db.close()
+
         return True, ''
 
     def delete_note_by_id(self, id: int, user_id: int):
@@ -47,4 +57,6 @@ class NotesService():
             return False, 'NotAuthorized'
         self.db.delete(noteToDelete)
         self.db.commit()
+        self.db.close()
+
         return True, ''
