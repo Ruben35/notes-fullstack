@@ -1,41 +1,85 @@
-.form{
-    display: flex;
-    flex-direction: column;
-    width: 80vw;
-    max-width: 344px;
-    gap: 20px;
-    margin-top: 40px;
-    margin-bottom: 50px;
+.NoNotes__container h1{
+    text-align: center;
+    font-size: 1.75rem;
+    margin: 0;
 }
 
-.form + button + span {
-    margin-top: 50px;
+.NoNotes__container button {
+    margin-top: 30px;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+    -webkit-animation-name: headShake;
+    animation-name: headShake;
+    -webkit-animation-duration: 3.5s;
+    animation-duration: 3.5s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-delay: 1s;
+    animation-delay: 1s;
 }
 
-.form + button + span a {
-    font-weight: var(--boldFont);
-    color: var(--textColor);
-    transition: 0.3s;
-    margin-left: 6px;
-    display: inline-block;
-}
+@-webkit-keyframes headShake {
+    0% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+  
+    6.5% {
+      -webkit-transform: translateX(-6px) rotateY(-9deg);
+      transform: translateX(-6px) rotateY(-9deg);
+    }
+  
+    18.5% {
+      -webkit-transform: translateX(5px) rotateY(7deg);
+      transform: translateX(5px) rotateY(7deg);
+    }
+  
+    31.5% {
+      -webkit-transform: translateX(-3px) rotateY(-5deg);
+      transform: translateX(-3px) rotateY(-5deg);
+    }
+  
+    43.5% {
+      -webkit-transform: translateX(2px) rotateY(3deg);
+      transform: translateX(2px) rotateY(3deg);
+    }
+  
+    50%,100% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+  }
 
-.form + button + span a:hover {
-    translate: 0 -2px;
-    scale: 1.1;
-}
-
-.form + button + span a:active {
-    translate: 0 -2px;
-    scale: 1.1;
-}
-
-.error {
-    color: var(--error);
-    font-weight: var(--lightFont);
-    margin-bottom: -10px;
-}
-
-.copy {
-    max-width: 300px;
-}
+  @keyframes headShake {
+    0% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+  
+    6.5% {
+      -webkit-transform: translateX(-6px) rotateY(-9deg);
+      transform: translateX(-6px) rotateY(-9deg);
+    }
+  
+    18.5% {
+      -webkit-transform: translateX(5px) rotateY(7deg);
+      transform: translateX(5px) rotateY(7deg);
+    }
+  
+    31.5% {
+      -webkit-transform: translateX(-3px) rotateY(-5deg);
+      transform: translateX(-3px) rotateY(-5deg);
+    }
+  
+    43.5% {
+      -webkit-transform: translateX(2px) rotateY(3deg);
+      transform: translateX(2px) rotateY(3deg);
+    }
+  
+    50%,100% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+  }
