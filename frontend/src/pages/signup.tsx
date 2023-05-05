@@ -5,26 +5,49 @@ import { useRef, useState } from 'react'
 import styles from '../styles/Home.module.css'
 import Button from '@/components/Button'
 import Link from 'next/link'
-import InfoModal from '@/components/Modals/InfoModal'
+import InfoModal, { Status } from '@/components/Modals/InfoModal'
+import UserService from '@/services/UserService'
+import { useRouter } from 'next/router'
 
 const Signup = () => {
 	const [error, setError] = useState('')
 	const [open, setOpen] = useState(false)
+	const [typeModal, setTypeModal] = useState<Status>('success')
 
 	const usernameRef = useRef<HTMLInputElement>(null)
 	const passwordRef = useRef<HTMLInputElement>(null)
 	const passwordRepeatRef = useRef<HTMLInputElement>(null)
 
+	const router = useRouter()
+
 	const handleClick = () => {
-		// if (
-		// 	!usernameRef.current?.value ||
-		// 	!passwordRef.current?.value ||
-		// 	!passwordRepeatRef.current?.value
-		// ) {
-		// 	setError('Llene el formulario')
-		// 	return
-		// }
-		// setError('')
+		const username = usernameRef.current?.value || ''
+		const password = passwordRef.current?.value || ''
+		const repeat_password = passwordRepeatRef.current?.value || ''
+
+		if (!username || !password || !repeat_password) {
+			setError('Fill in all the fields')
+			return
+		}
+		if (password.length < 6) {
+			setError('The password must be of at least 6 characters')
+			return
+		}
+		if (password != repeat_password) {
+			setError('The passwords do not match')
+			return
+		}
+
+		setError('')
+
+		UserService.registerUser({ username, password, repeat_password })
+			.then((res) => {
+				if (res.status == 409) setTypeModal('error')
+				else setTypeModal('success')
+
+				setOpen(true)
+			})
+			.catch((e) => console.error(e))
 		setOpen(true)
 	}
 
@@ -70,10 +93,22 @@ const Signup = () => {
 			<InfoModal
 				open={open}
 				setOpen={setOpen}
-				onConfirmationCallback={() => {}}
-				title='¡Successfully Created!'
-				type='success'
-				buttonLabel='Go Back To Login'
+				onConfirmationCallback={
+					typeModal == 'success'
+						? () => {
+								router.push('/')
+						  }
+						: () => {}
+				}
+				title={
+					typeModal == 'success'
+						? '¡Successfully Created!'
+						: 'Username already in use'
+				}
+				type={typeModal}
+				buttonLabel={
+					typeModal == 'success' ? 'Go Back To Login' : 'Choose another one'
+				}
 			/>
 		</>
 	)

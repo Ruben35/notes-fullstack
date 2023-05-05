@@ -4,7 +4,7 @@ import Image from 'next/image'
 import GreenCheck from '../../../public/icons/green-check.svg'
 import CrossMark from '../../../public/icons/cross-mark.svg'
 
-type Status = 'success' | 'error'
+export type Status = 'success' | 'error'
 
 interface Props {
 	open: boolean
