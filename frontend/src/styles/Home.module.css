@@ -35,3 +35,7 @@
     font-weight: var(--lightFont);
     margin-bottom: -10px;
 }
+
+.copy {
+    max-width: 300px;
+}

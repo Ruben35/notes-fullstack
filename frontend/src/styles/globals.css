@@ -217,3 +217,126 @@ button:active{
     transform: rotate(360deg);
   }
 }
+
+/* MODAL */
+
+.modal__background{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  background-color: rgb(43 43 43 / 0.2);
+  display: flex;
+  justify-content: center;
+  animation: enterModalBackground 0.4s ease-out;
+}
+
+.modal__frame {
+	max-width: 380px;
+  width: 90%;
+  height: fit-content;
+  margin-top: 18vh;
+  padding: 30px 20px;
+  background-color: var(--level-0);
+  border-radius: 30px;
+  box-shadow: 0px 5px 17px rgba(31, 30, 41, 0.46);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  animation: enterModal 0.8s ease-out;
+}
+
+.modal__title{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: var(--boldFont);
+}
+
+.modal__frame img {
+  margin: 0 auto;
+  animation: pulse 1.2s ease-in-out  infinite;
+}
+
+.modal__frame button:not(button.small){
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  padding: 15px 0px;
+} 
+	
+.modal--exit {
+  animation: exitModalBackground 0.4s ease-in-out 0s 1 normal forwards;
+
+  .modal__frame {
+    animation: exitModal 0.2s ease-in-out 0s 1 normal forwards;
+  }
+}
+
+
+body:has(.modal__background.open) {
+	overflow-y: hidden;
+}
+
+body:has(.modal__background.open) .modal__background{
+  overflow-y: auto;
+}
+
+@media only screen and (min-width:835px){ /* Desktop */
+  body:has(.modal__background.open) {
+    overflow: hidden;
+  }
+  body:has(.modal__background.open) .modal__background{
+    overflow-y: hidden;
+  }
+}
+
+@keyframes enterModal {
+	0% {
+		translate: 0 100vh;
+	}
+	100% {
+		translate: 0;
+	}
+}
+
+@keyframes enterModalBackground {
+	0% {
+		background-color: rgb(24 23 31 / 0);
+	}
+	100% {
+		background-color: currentBackgroundColor;
+	}
+}
+
+@keyframes exitModal {
+	0% {
+		translate: 0;
+	}
+	100% {
+		translate: 0 100vh;
+	}
+}
+
+@keyframes exitModalBackground {
+	0% {
+		background-color: currentBackgroundColor;
+	}
+	100% {
+		background-color: rgb(24 23 31 / 0);
+	}
+}
+
+@keyframes pulse {
+  0% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.1
+  }
+  100% {
+    sclae: 1;
+  }
+}
