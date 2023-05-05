@@ -1,13 +1,14 @@
 import NotesAppLogo from '@/components/NotesAppLogo'
 import Textfield from '@/components/Textfield'
 import Head from 'next/head'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import styles from '../styles/Home.module.css'
 import Button from '@/components/Button'
 import Link from 'next/link'
 import InfoModal, { Status } from '@/components/Modals/InfoModal'
 import UserService from '@/services/UserService'
 import { useRouter } from 'next/router'
+import useUser from '@/data/hooks/useUser'
 
 const Signup = () => {
 	const [error, setError] = useState('')
@@ -18,7 +19,14 @@ const Signup = () => {
 	const passwordRef = useRef<HTMLInputElement>(null)
 	const passwordRepeatRef = useRef<HTMLInputElement>(null)
 
+	const { isLogged } = useUser()
 	const router = useRouter()
+
+	useEffect(() => {
+		if (isLogged()) {
+			router.replace('/home')
+		}
+	}, [isLogged, router])
 
 	const handleClick = () => {
 		const username = usernameRef.current?.value || ''

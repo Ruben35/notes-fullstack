@@ -1,19 +1,25 @@
 import NotesAppLogo from '@/components/NotesAppLogo'
 import Textfield from '@/components/Textfield'
 import Head from 'next/head'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import styles from '../styles/Home.module.css'
 import Button from '@/components/Button'
 import Link from 'next/link'
 import UserService from '@/services/UserService'
 import InfoModal from '@/components/Modals/InfoModal'
+import useUser from '@/data/hooks/useUser'
+import { useRouter } from 'next/router'
 
-export default function Home() {
+export default function Index() {
 	const [error, setError] = useState('')
 	const [displayModalError, setDisplayModalError] = useState(false)
 
 	const usernameRef = useRef<HTMLInputElement>(null)
 	const passwordRef = useRef<HTMLInputElement>(null)
+
+	const { login, isLogged } = useUser()
+
+	const router = useRouter()
 
 	const handleClick = () => {
 		const username = usernameRef.current?.value || ''
@@ -30,11 +36,18 @@ export default function Home() {
 			.then((res) => {
 				if (res.status != 200) setDisplayModalError(true)
 				else {
-					console.log(res.data.access_token)
+					login(res.data.access_token)
+					router.replace('/home')
 				}
 			})
 			.catch((e) => console.error(e))
 	}
+
+	useEffect(() => {
+		if (isLogged()) {
+			router.replace('/home')
+		}
+	}, [isLogged, router])
 
 	return (
 		<>
