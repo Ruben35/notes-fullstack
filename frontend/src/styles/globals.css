@@ -156,7 +156,7 @@ footer a:hover img{
   margin-bottom: 10px;
 }
 
-.textField input {
+.textField input , .textField textarea{
   box-sizing: border-box;
   padding: 14px 16px;
   border-radius: 10px;
@@ -165,7 +165,7 @@ footer a:hover img{
   outline: none;
 }
 
-.textField input:focus{
+.textField input:focus, .textField textarea:focus{
   border: 3px solid var(--textColor); 
 }
 
@@ -261,7 +261,7 @@ button:active{
   animation: pulse 1.2s ease-in-out  infinite;
 }
 
-.modal__frame button:not(button.small){
+.modal__frame button:not(.modal__smallButtons button){
   width: 100%;
   max-width: 280px;
   margin: 0 auto;
@@ -276,6 +276,29 @@ button:active{
   }
 }
 
+.modal__smallButtons{
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal__smallButtons button{
+  padding: 10px 20px;
+}
+.modal__smallButtons button:last-child{
+  background-color: var(--level-0);
+  color: var(--textColor);
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0)
+}
+
+.modal__smallButtons button:last-child:hover{
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25)
+}
+
+.modal__error {
+  color: var(--error);
+  font-weight: var(--lightFont);
+  margin: -10px 0;
+}
 
 body:has(.modal__background.open) {
 	overflow-y: hidden;
@@ -362,4 +385,43 @@ nav button{
 
 nav button:hover{
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25)
+}
+
+/* *NOTECARD* */
+.NoteCard{
+  background-color: var(--level-0);
+  box-shadow: var(--basicDropShadow);
+  padding: 20px;
+  border-radius: 15px;
+  width: 100%;
+}
+
+.NoteCard div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.NoteCard div button {
+  background-color: var(--level-0);
+  padding: 0px;
+  height: 30px;
+  width: 30px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0)
+}
+.NoteCard div button:hover {
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25)
+}
+
+.NoteCard div + div {
+  width: 100%;
+  text-align: justify;
+  text-justify: inter-word;
+	white-space: pre-line;
+  word-break: break-all;
 }
