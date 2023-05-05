@@ -5,6 +5,8 @@ import TextArea from '../TextArea'
 import NoteService from '@/services/NoteService'
 import useUser from '@/data/hooks/useUser'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
+import TrashCan from '../../../public/icons/trash.svg'
 
 export type Actions = 'create' | 'edit'
 
@@ -19,7 +21,7 @@ interface Props {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>
 	type?: Actions
 	note?: Note
-	callback?: () => any
+	callback?: (arg: any) => any
 }
 
 const ActionNoteModal: React.FC<Props> = ({
@@ -62,7 +64,6 @@ const ActionNoteModal: React.FC<Props> = ({
 						break
 					case 201:
 						close()
-						callback()
 						break
 					case 403:
 						logout()
@@ -93,7 +94,6 @@ const ActionNoteModal: React.FC<Props> = ({
 						break
 					case 200:
 						close()
-						callback()
 						break
 					case 403:
 						logout()
@@ -104,6 +104,11 @@ const ActionNoteModal: React.FC<Props> = ({
 				}
 			})
 			.catch((e) => console.error(e))
+	}
+
+	const handleDelete = () => {
+		close()
+		callback({ id: note.id, title: note.title })
 	}
 
 	useEffect(() => {
@@ -145,7 +150,12 @@ const ActionNoteModal: React.FC<Props> = ({
 					{type == 'create' ? (
 						<Button onClick={handleAddNote}>Add Note</Button>
 					) : (
-						<Button onClick={handleEditNote}>Edit Note</Button>
+						<div>
+							<Button onClick={handleEditNote}>Edit Note</Button>
+							<button onClick={handleDelete}>
+								<Image src={TrashCan} alt='delete' />
+							</button>
+						</div>
 					)}
 					<Button
 						onClick={() => {

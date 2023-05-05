@@ -256,7 +256,7 @@ button:active{
   font-weight: var(--boldFont);
 }
 
-.modal__frame img {
+.modal__frame img:not(.modal__smallButtons img) {
   margin: 0 auto;
   animation: pulse 1.2s ease-in-out  infinite;
 }
@@ -284,6 +284,12 @@ button:active{
 .modal__smallButtons button{
   padding: 10px 20px;
 }
+
+.modal__smallButtons.delete button:hover{
+  background-color: var(--error);
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25)
+}
+
 .modal__smallButtons button:last-child{
   background-color: var(--level-0);
   color: var(--textColor);
@@ -292,6 +298,33 @@ button:active{
 
 .modal__smallButtons button:last-child:hover{
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25)
+}
+
+.modal__smallButtons div {
+  display: flex;
+  align-items: center;
+  gap:10px
+}
+
+.modal__smallButtons div button:last-child{
+  background-color: var(--level-0);
+  padding: 0px;
+  height: 40px;
+  width: 40px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0)
+}
+
+.modal__smallButtons div button:last-child:hover{
+  background-color: var(--error);
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25)
+}
+
+.modal__smallButtons div button:last-child:hover img{
+  filter: invert(1) brightness(1.5);
 }
 
 .modal__error {
@@ -423,5 +456,5 @@ nav button:hover{
   text-align: justify;
   text-justify: inter-word;
 	white-space: pre-line;
-  word-break: break-all;
+  word-break: break-word;
 }

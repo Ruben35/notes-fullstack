@@ -30,4 +30,11 @@ export default class NoteService{
         })
     }
 
+    static deleteNote(id:number) {
+        return clientRequest({
+            method:'delete',
+            url: `/notes/${id}`
+        })
+    }
+
 }

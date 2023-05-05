@@ -1,9 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import ActionNoteModal, { Actions } from '../Modals/ActionNoteModal'
 import styles from '../../styles/Home.module.css'
 import Button from '../Button'
 import NoteCard from './NoteCard'
-import { type } from 'os'
+import DeleteModal from '../Modals/DeleteModal'
+import InfoModal from '../Modals/InfoModal'
+import NoteService from '@/services/NoteService'
+import useUser from '@/data/hooks/useUser'
+import { useRouter } from 'next/router'
 
 interface Note {
 	id: number
@@ -16,10 +20,24 @@ interface Props {
 }
 
 const WithNotes: React.FC<Props> = (notes) => {
+	// ActionNoteModal
 	const [openEditor, setOpenEditor] = useState(false)
 	const [orderRecent, setOrderRecent] = useState(true)
 	const [typeModal, setTypeModal] = useState<Actions>('create')
 	const [noteToEdit, setNoteToEdit] = useState<Note>()
+
+	// DeleteModal
+	const [openDelete, setOpenDelete] = useState(false)
+	const [deleteNote, setDeleteNote] = useState({
+		id: 0,
+		title: 'The title',
+	})
+
+	// InfoModal
+	const [openInfo, setOpenInfo] = useState(false)
+
+	const { logout } = useUser()
+	const router = useRouter()
 
 	const notesOrdered = useMemo(
 		() =>
@@ -38,6 +56,27 @@ const WithNotes: React.FC<Props> = (notes) => {
 		setTypeModal('edit')
 		setNoteToEdit(note)
 		setOpenEditor(true)
+	}
+
+	const handleCallback = (arg: any) => {
+		if (typeModal == 'edit') {
+			setDeleteNote(arg)
+			setOpenDelete(true)
+		}
+	}
+
+	const handleOnDelete = () => {
+		NoteService.deleteNote(deleteNote.id)
+			.then((res) => {
+				if (res.status != 200) {
+					setOpenInfo(true)
+					if (res.status == 403) {
+						logout()
+						router.replace('/')
+					}
+				}
+			})
+			.catch((e) => console.error(e))
 	}
 
 	return (
@@ -84,7 +123,21 @@ const WithNotes: React.FC<Props> = (notes) => {
 				setOpen={setOpenEditor}
 				type={typeModal}
 				note={noteToEdit}
-				callback={() => {}}
+				callback={handleCallback}
+			/>
+			<DeleteModal
+				open={openDelete}
+				setOpen={setOpenDelete}
+				noteTitle={deleteNote.title}
+				callback={handleOnDelete}
+			/>
+			<InfoModal
+				open={openInfo}
+				setOpen={setOpenInfo}
+				onConfirmationCallback={() => {}}
+				type='error'
+				title='There was an error'
+				buttonLabel='Okey'
 			/>
 		</>
 	)
